@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Respira com Fernanda — Registro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8f7f5;color:#1a1a1a;font-size:15px}
+h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.subtitle{font-size:13px;color:#777;margin-bottom:1.5rem}
+.wrap{max-width:760px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid #e5e3df;overflow-x:auto}
+.tab{padding:9px 15px;font-size:13px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0;transition:color .15s}
+.tab.active{color:#1a1a1a;font-weight:600;border-bottom-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.form-card{background:#fff;border:1px solid #e8e6e1;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
+.sec-label{font-size:10px;font-weight:700;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:4px}
+label{font-size:12px;color:#888;font-weight:500}
+input[type=text],input[type=date],input[type=month],input[type=number],select{
+  width:100%;padding:8px 10px;border:1px solid #e0deda;border-radius:8px;
+  font-size:14px;background:#fafafa;color:#1a1a1a;outline:none;
+  transition:border-color .15s}
+input:focus,select:focus{border-color:#a0a0a0;background:#fff}
+.btn-add{margin-top:14px;width:100%;padding:10px;background:#1a1a1a;color:#fff;
+  border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn-add:hover{opacity:.85}
+.btn-sync{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
+  background:#fff;border:1px solid #e0deda;border-radius:8px;font-size:13px;
+  color:#555;cursor:pointer;transition:background .15s}
+.btn-sync:hover{background:#f5f4f2}
+.btn-sync.loading{opacity:.6;pointer-events:none}
+.month-title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:8px;
+  padding-bottom:6px;border-bottom:1px solid #f0ede8;display:flex;justify-content:space-between}
+.month-group{margin-bottom:1.5rem}
+.record{background:#fff;border:1px solid #ece9e4;border-radius:10px;padding:10px 14px;
+  margin-bottom:6px;display:grid;grid-template-columns:1fr auto;align-items:start;gap:8px}
+.rec-name{font-size:14px;font-weight:600;color:#1a1a1a}
+.rec-meta{font-size:12px;color:#888;margin-top:3px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-ok{background:#e6f5ee;color:#1a7a45}
+.b-rep{background:#e8f0fb;color:#1a4fa0}
+.b-pend{background:#f2f0ec;color:#888}
+.b-gym{background:#fff3e0;color:#a05a00}
+.b-tot{background:#fce8f0;color:#a0186a}
+.b-ci{background:#ede8fb;color:#5a2ab8}
+.b-val{background:#e6f5ee;color:#1a7a45}
+.b-sai{background:#fce8e8;color:#a01a1a}
+.tag{font-size:11px;color:#aaa}
+.del{font-size:12px;color:#ccc;cursor:pointer;padding:3px 6px;border-radius:4px;border:none;background:none}
+.del:hover{background:#f5f4f2;color:#888}
+.empty{font-size:14px;color:#bbb;padding:2rem 0;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.chip{background:#ede8fb;color:#5a2ab8;font-size:11px;padding:3px 9px;border-radius:20px;
+  display:flex;align-items:center;gap:4px}
+.chip-del{cursor:pointer;font-size:10px;color:#8a60d8}
+.aluno-card{background:#fff;border:1px solid #ece9e4;border-radius:10px;padding:1rem 1.25rem;margin-bottom:8px}
+.aluno-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.aluno-name{font-size:14px;font-weight:600}
+.aluno-count{font-size:12px;color:#aaa}
+.app-card{background:#fff;border:1px solid #ece9e4;border-radius:10px;padding:1rem 1.25rem;margin-bottom:8px}
+.espaco-card{background:#fff;border:1px solid #ece9e4;border-radius:10px;padding:10px 14px;
+  margin-bottom:6px;display:grid;grid-template-columns:1fr auto;align-items:start;gap:8px}
+.divider{border:none;border-top:1px solid #f0ede8;margin:1.25rem 0}
+
+/* Resumo */
+.res-card{background:#fff;border:1px solid #ece9e4;border-radius:12px;padding:1.25rem;margin-bottom:12px}
+.res-mes-title{font-size:15px;font-weight:700;margin-bottom:14px;color:#1a1a1a}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.metric{background:#f8f7f5;border-radius:8px;padding:10px 12px}
+.metric-label{font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.metric-val{font-size:17px;font-weight:700}
+.pos{color:#1a7a45}.neg{color:#a01a1a}
+.barra-wrap{margin-top:8px}
+.barra-row{display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:3px}
+.barra-track{background:#f0ede8;border-radius:4px;height:5px;overflow:hidden}
+.barra-ent{background:#1a7a45;height:5px;border-radius:4px}
+.barra-sai{background:#c0392b;height:5px;border-radius:4px}
+.detail-linha{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f5f4f2}
+.detail-linha:last-child{border:none}
+.detail-label{color:#888}
+.detail-val{font-weight:600}
+.pend-aviso{margin-top:10px;font-size:12px;color:#c0392b;font-weight:500}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;
+  font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+.toast.erro{background:#c0392b}
+
+/* Status Sheets */
+.sheets-status{display:flex;align-items:center;gap:8px;font-size:12px;color:#aaa;margin-bottom:1rem}
+.dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
+.dot.ok{background:#27ae60}.dot.erro{background:#c0392b}.dot.sync{background:#f39c12}
+
+@media(max-width:500px){.metrics{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Respira com Fernanda</h1>
+  <p class="subtitle">Controle de alunas · pagamentos · frequência</p>
+
+  <div class="sheets-status">
+    <div class="dot" id="dot"></div>
+    <span id="sheets-msg">Verificando conexão com Google Sheets...</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab" onclick="switchTab('resumo')">Resumo</button>
+    <button class="tab active" onclick="switchTab('pgto')">Pagamentos</button>
+    <button class="tab" onclick="switchTab('freq')">Frequência</button>
+    <button class="tab" onclick="switchTab('apps')">Aplicativos</button>
+    <button class="tab" onclick="switchTab('espaco')">Meu espaço</button>
+  </div>
+
+  <!-- RESUMO -->
+  <div id="panel-resumo" class="panel">
+    <div id="resumo-list"></div>
+  </div>
+
+  <!-- PAGAMENTOS -->
+  <div id="panel-pgto" class="panel active">
+    <div class="form-card">
+      <div class="sec-label">Novo registro de pagamento</div>
+      <div class="g2">
+        <div class="field"><label>Nome da aluna</label><input type="text" id="p-nome" placeholder="ex: Mariana"/></div>
+        <div class="field"><label>Mês de referência</label><input type="month" id="p-mes"/></div>
+      </div>
+      <div class="g3" style="margin-top:12px">
+        <div class="field"><label>Data do pagamento</label><input type="date" id="p-pgto"/></div>
+        <div class="field"><label>Repasse para a escola</label><input type="date" id="p-rep"/></div>
+        <div class="field"><label>Observação</label><input type="text" id="p-obs" placeholder="ex: pix, atraso..."/></div>
+      </div>
+      <button class="btn-add" onclick="addPgto()">+ Adicionar pagamento</button>
+    </div>
+    <div id="pgto-list"></div>
+  </div>
+
+  <!-- FREQUÊNCIA -->
+  <div id="panel-freq" class="panel">
+    <div class="form-card">
+      <div class="sec-label">Registrar presença</div>
+      <div class="g3">
+        <div class="field"><label>Nome da aluna</label><input type="text" id="f-nome" placeholder="ex: Mariana"/></div>
+        <div class="field"><label>Data da aula</label><input type="date" id="f-data"/></div>
+        <div class="field"><label>Modalidade (opcional)</label><input type="text" id="f-mod" placeholder="ex: hatha, yin..."/></div>
+      </div>
+      <button class="btn-add" onclick="addFreq()">+ Registrar presença</button>
+    </div>
+    <div id="freq-list"></div>
+  </div>
+
+  <!-- APLICATIVOS -->
+  <div id="panel-apps" class="panel">
+    <div class="form-card">
+      <div class="sec-label">Registrar check-in</div>
+      <div class="g3">
+        <div class="field"><label>Nome da aluna</label><input type="text" id="a-nome" placeholder="ex: Carla"/></div>
+        <div class="field"><label>Aplicativo</label>
+          <select id="a-app"><option value="Gympass">Gympass</option><option value="Totalpass">Totalpass</option></select>
+        </div>
+        <div class="field"><label>Data do check-in</label><input type="date" id="a-data"/></div>
+      </div>
+      <button class="btn-add" onclick="addCheckin()">+ Registrar check-in</button>
+    </div>
+    <hr class="divider"/>
+    <div class="form-card">
+      <div class="sec-label">Repasse mensal do aplicativo</div>
+      <div class="g3">
+        <div class="field"><label>Aplicativo</label>
+          <select id="r-app"><option value="Gympass">Gympass</option><option value="Totalpass">Totalpass</option></select>
+        </div>
+        <div class="field"><label>Mês de referência</label><input type="month" id="r-mes"/></div>
+        <div class="field"><label>Valor recebido (R$)</label><input type="number" id="r-valor" placeholder="ex: 320" min="0" step="0.01"/></div>
+      </div>
+      <div class="g2" style="margin-top:12px">
+        <div class="field"><label>Data do recebimento</label><input type="date" id="r-data"/></div>
+        <div class="field"><label>Observação</label><input type="text" id="r-obs" placeholder="ex: depósito..."/></div>
+      </div>
+      <button class="btn-add" onclick="addRepasse()">+ Registrar repasse</button>
+    </div>
+    <div id="apps-list"></div>
+  </div>
+
+  <!-- MEU ESPAÇO -->
+  <div id="panel-espaco" class="panel">
+    <div class="form-card">
+      <div class="sec-label">Registrar pagamento ao espaço</div>
+      <div class="g2">
+        <div class="field"><label>Nome do espaço</label><input type="text" id="e-nome" placeholder="ex: Studio Viva"/></div>
+        <div class="field"><label>Mês de referência</label><input type="month" id="e-mes"/></div>
+      </div>
+      <div class="g3" style="margin-top:12px">
+        <div class="field"><label>Valor pago (R$)</label><input type="number" id="e-valor" placeholder="ex: 500" min="0" step="0.01"/></div>
+        <div class="field"><label>Data do pagamento</label><input type="date" id="e-data"/></div>
+        <div class="field"><label>Forma de pagamento</label><input type="text" id="e-forma" placeholder="ex: pix, boleto..."/></div>
+      </div>
+      <div style="margin-top:12px" class="field"><label>Observação</label><input type="text" id="e-obs" placeholder="ex: aluguel, porcentagem..."/></div>
+      <button class="btn-add" onclick="addEspaco()">+ Registrar pagamento</button>
+    </div>
+    <div id="espaco-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO — cole aqui a URL do seu Google Apps Script
+// ============================================================
+const SHEETS_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+// ============================================================
+
+let pgtos    = JSON.parse(localStorage.getItem('yoga_pgtos')    || '[]');
+let freqs    = JSON.parse(localStorage.getItem('yoga_freqs')    || '[]');
+let checkins = JSON.parse(localStorage.getItem('yoga_checkins') || '[]');
+let repasses = JSON.parse(localStorage.getItem('yoga_repasses') || '[]');
+let espacos  = JSON.parse(localStorage.getItem('yoga_espacos')  || '[]');
+
+function save(){
+  localStorage.setItem('yoga_pgtos',    JSON.stringify(pgtos));
+  localStorage.setItem('yoga_freqs',    JSON.stringify(freqs));
+  localStorage.setItem('yoga_checkins', JSON.stringify(checkins));
+  localStorage.setItem('yoga_repasses', JSON.stringify(repasses));
+  localStorage.setItem('yoga_espacos',  JSON.stringify(espacos));
+}
+
+// ---------- Sheets ----------
+function setDot(state){ // 'ok' | 'erro' | 'sync' | ''
+  const d=document.getElementById('dot');
+  const m=document.getElementById('sheets-msg');
+  d.className='dot'+(state?' '+state:'');
+  const msgs={ok:'Conectado ao Google Sheets',erro:'Sem conexão com Google Sheets — dados salvos localmente',sync:'Enviando...','':`Verificando...`};
+  m.textContent=msgs[state]||'';
+}
+
+async function sendToSheets(tipo, dados){
+  if(!SHEETS_URL||SHEETS_URL==='COLE_AQUI_A_URL_DO_APPS_SCRIPT') return;
+  setDot('sync');
+  try{
+    await fetch(SHEETS_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo, ...dados})
+    });
+    setDot('ok');
+  }catch(e){
+    setDot('erro');
+  }
+}
+
+async function pingSheets(){
+  if(!SHEETS_URL||SHEETS_URL==='COLE_AQUI_A_URL_DO_APPS_SCRIPT'){
+    setDot('');
+    document.getElementById('sheets-msg').textContent='Google Sheets não configurado ainda — veja instruções no README';
+    return;
+  }
+  setDot('sync');
+  try{
+    await fetch(SHEETS_URL+'?ping=1',{mode:'no-cors'});
+    setDot('ok');
+  }catch(e){ setDot('erro'); }
+}
+
+// ---------- Utils ----------
+const tabKeys=['resumo','pgto','freq','apps','espaco'];
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabKeys[i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='resumo') renderResumo();
+}
+
+function fmt(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'/'+m+'/'+y;}
+function fmtMes(m,longo){
+  if(!m)return'';
+  const[y,mo]=m.split('-');
+  const ml=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mc=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return(longo?ml:mc)[parseInt(mo)-1]+' '+y;
+}
+function mesDeData(d){return d?d.slice(0,7):null;}
+function fmtVal(v){
+  if(v===null||v===undefined||v==='') return'—';
+  return'R$ '+parseFloat(v).toFixed(2).replace('.',',');
+}
+
+function toast(msg,erro){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast'+(erro?' erro':'')+' show';
+  setTimeout(()=>t.className='toast'+(erro?' erro':''),2500);
+}
+
+// ---------- PAGAMENTOS ----------
+async function addPgto(){
+  const nome=document.getElementById('p-nome').value.trim();
+  const mes=document.getElementById('p-mes').value;
+  if(!nome||!mes){toast('Preencha nome e mês.',true);return;}
+  const obj={id:Date.now(),nome,mes,
+    pgto:document.getElementById('p-pgto').value||null,
+    rep:document.getElementById('p-rep').value||null,
+    obs:document.getElementById('p-obs').value.trim()||null};
+  pgtos.push(obj); save();
+  ['p-nome','p-mes','p-pgto','p-rep','p-obs'].forEach(id=>document.getElementById(id).value='');
+  renderPgto();
+  toast('Pagamento registrado!');
+  await sendToSheets('pagamento', obj);
+}
+function delPgto(id){pgtos=pgtos.filter(r=>r.id!==id);save();renderPgto();}
+function renderPgto(){
+  const c=document.getElementById('pgto-list');
+  if(!pgtos.length){c.innerHTML='<p class="empty">Nenhum pagamento registrado ainda.</p>';return;}
+  const g={};
+  pgtos.forEach(r=>{if(!g[r.mes])g[r.mes]=[];g[r.mes].push(r);});
+  c.innerHTML=Object.keys(g).sort().reverse().map(mes=>`
+    <div class="month-group">
+      <div class="month-title"><span>${fmtMes(mes)}</span></div>
+      ${g[mes].map(r=>`<div class="record"><div>
+        <div class="rec-name">${r.nome}</div>
+        <div class="rec-meta">
+          ${r.pgto?`<span class="badge b-ok">pago ${fmt(r.pgto)}</span>`:'<span class="badge b-pend">pagamento pendente</span>'}
+          ${r.rep?`<span class="badge b-rep">repassado ${fmt(r.rep)}</span>`:'<span class="badge b-pend">repasse pendente</span>'}
+          ${r.obs?`<span class="tag">· ${r.obs}</span>`:''}
+        </div></div>
+        <button class="del" onclick="delPgto(${r.id})">✕</button>
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+// ---------- FREQUÊNCIA ----------
+async function addFreq(){
+  const nome=document.getElementById('f-nome').value.trim();
+  const data=document.getElementById('f-data').value;
+  if(!nome||!data){toast('Preencha nome e data.',true);return;}
+  const obj={id:Date.now(),nome,data,mod:document.getElementById('f-mod').value.trim()||null};
+  freqs.push(obj); save();
+  ['f-nome','f-data','f-mod'].forEach(id=>document.getElementById(id).value='');
+  renderFreq();
+  toast('Presença registrada!');
+  await sendToSheets('frequencia', obj);
+}
+function delFreq(id){freqs=freqs.filter(f=>f.id!==id);save();renderFreq();}
+function renderFreq(){
+  const c=document.getElementById('freq-list');
+  if(!freqs.length){c.innerHTML='<p class="empty">Nenhuma presença registrada ainda.</p>';return;}
+  const byName={};
+  freqs.forEach(f=>{if(!byName[f.nome])byName[f.nome]=[];byName[f.nome].push(f);});
+  const mesAtual=new Date().toISOString().slice(0,7);
+  c.innerHTML=Object.keys(byName).sort().map(nome=>{
+    const aulas=byName[nome].sort((a,b)=>b.data.localeCompare(a.data));
+    const noMes=aulas.filter(a=>a.data.slice(0,7)===mesAtual).length;
+    return`<div class="aluno-card">
+      <div class="aluno-header">
+        <span class="aluno-name">${nome}</span>
+        <span class="aluno-count">${noMes} este mês · ${aulas.length} no total</span>
+      </div>
+      <div class="chips">${aulas.map(a=>`<span class="chip">${fmt(a.data)}${a.mod?' · '+a.mod:''}<span class="chip-del" onclick="delFreq(${a.id})"> ✕</span></span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- APLICATIVOS ----------
+async function addCheckin(){
+  const nome=document.getElementById('a-nome').value.trim();
+  const data=document.getElementById('a-data').value;
+  if(!nome||!data){toast('Preencha nome e data.',true);return;}
+  const obj={id:Date.now(),nome,app:document.getElementById('a-app').value,data};
+  checkins.push(obj); save();
+  ['a-nome','a-data'].forEach(id=>document.getElementById(id).value='');
+  renderApps();
+  toast('Check-in registrado!');
+  await sendToSheets('checkin', obj);
+}
+function delCheckin(id){checkins=checkins.filter(c=>c.id!==id);save();renderApps();}
+
+async function addRepasse(){
+  const app=document.getElementById('r-app').value;
+  const mes=document.getElementById('r-mes').value;
+  if(!mes){toast('Preencha o mês.',true);return;}
+  const valor=document.getElementById('r-valor').value;
+  const obj={id:Date.now(),app,mes,valor:valor?parseFloat(valor):null,
+    data:document.getElementById('r-data').value||null,
+    obs:document.getElementById('r-obs').value.trim()||null};
+  repasses.push(obj); save();
+  ['r-mes','r-valor','r-data','r-obs'].forEach(id=>document.getElementById(id).value='');
+  renderApps();
+  toast('Repasse registrado!');
+  await sendToSheets('repasse', obj);
+}
+function delRepasse(id){repasses=repasses.filter(r=>r.id!==id);save();renderApps();}
+
+function renderApps(){
+  const c=document.getElementById('apps-list');
+  if(!checkins.length&&!repasses.length){c.innerHTML='<p class="empty">Nenhum registro de aplicativo ainda.</p>';return;}
+  const meses=new Set();
+  checkins.forEach(ch=>meses.add(mesDeData(ch.data)));
+  repasses.forEach(r=>meses.add(r.mes));
+  const appBadge={Gympass:'b-gym',Totalpass:'b-tot'};
+  c.innerHTML=[...meses].sort().reverse().map(mes=>{
+    const chs=checkins.filter(ch=>mesDeData(ch.data)===mes);
+    const reps=repasses.filter(r=>r.mes===mes);
+    const byApp={};chs.forEach(ch=>{if(!byApp[ch.app])byApp[ch.app]=[];byApp[ch.app].push(ch);});
+    const repByApp={};reps.forEach(r=>{repByApp[r.app]=r;});
+    const allApps=[...new Set([...Object.keys(byApp),...Object.keys(repByApp)])].sort();
+    return`<div class="app-card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">${fmtMes(mes)}</div>
+      ${allApps.map(app=>{
+        const appChs=byApp[app]||[];const rep=repByApp[app]||null;
+        const byAluna={};appChs.forEach(ch=>{if(!byAluna[ch.nome])byAluna[ch.nome]=[];byAluna[ch.nome].push(ch);});
+        return`<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+            <span class="badge ${appBadge[app]||'b-pend'}">${app}</span>
+            <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+              <span class="badge b-ci">${appChs.length} check-in${appChs.length!==1?'s':''}</span>
+              ${rep?`<span class="badge b-val">${fmtVal(rep.valor)} em ${fmt(rep.data)}</span><button class="del" onclick="delRepasse(${rep.id})">✕</button>`:`<span class="badge b-pend">repasse pendente</span>`}
+            </div>
+          </div>
+          ${Object.keys(byAluna).length?Object.keys(byAluna).sort().map(nome=>{
+            const datas=byAluna[nome].sort((a,b)=>b.data.localeCompare(a.data));
+            return`<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f5f4f2">
+              <span style="font-weight:600">${nome}</span>
+              <span style="font-size:11px;color:#aaa;margin-left:4px">${datas.length} check-in${datas.length!==1?'s':''}</span>
+              <div class="chips">${datas.map(d=>`<span class="chip">${fmt(d.data)}<span class="chip-del" onclick="delCheckin(${d.id})"> ✕</span></span>`).join('')}</div>
+            </div>`;
+          }).join(''):''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ---------- ESPAÇO ----------
+async function addEspaco(){
+  const nome=document.getElementById('e-nome').value.trim();
+  const mes=document.getElementById('e-mes').value;
+  if(!nome||!mes){toast('Preencha nome do espaço e mês.',true);return;}
+  const valor=document.getElementById('e-valor').value;
+  const obj={id:Date.now(),nome,mes,valor:valor?parseFloat(valor):null,
+    data:document.getElementById('e-data').value||null,
+    forma:document.getElementById('e-forma').value.trim()||null,
+    obs:document.getElementById('e-obs').value.trim()||null};
+  espacos.push(obj); save();
+  ['e-nome','e-mes','e-valor','e-data','e-forma','e-obs'].forEach(id=>document.getElementById(id).value='');
+  renderEspaco();
+  toast('Pagamento ao espaço registrado!');
+  await sendToSheets('espaco', obj);
+}
+function delEspaco(id){espacos=espacos.filter(e=>e.id!==id);save();renderEspaco();}
+function renderEspaco(){
+  const c=document.getElementById('espaco-list');
+  if(!espacos.length){c.innerHTML='<p class="empty">Nenhum pagamento ao espaço registrado ainda.</p>';return;}
+  const g={};
+  espacos.forEach(e=>{if(!g[e.mes])g[e.mes]=[];g[e.mes].push(e);});
+  c.innerHTML=Object.keys(g).sort().reverse().map(mes=>{
+    const itens=g[mes];
+    const total=itens.reduce((s,e)=>s+(e.valor||0),0);
+    return`<div class="month-group">
+      <div class="month-title"><span>${fmtMes(mes)}</span><span style="font-weight:400;font-size:13px;color:#aaa">${fmtVal(total)}</span></div>
+      ${itens.map(e=>`<div class="espaco-card"><div>
+        <div class="rec-name">${e.nome}</div>
+        <div class="rec-meta">
+          ${e.data?`<span class="badge b-ok">pago ${fmt(e.data)}</span>`:'<span class="badge b-pend">data não informada</span>'}
+          ${e.valor!==null?`<span class="badge b-sai">${fmtVal(e.valor)}</span>`:''}
+          ${e.forma?`<span class="tag">· ${e.forma}</span>`:''}
+          ${e.obs?`<span class="tag">· ${e.obs}</span>`:''}
+        </div></div>
+        <button class="del" onclick="delEspaco(${e.id})">✕</button>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ---------- RESUMO ----------
+function renderResumo(){
+  const c=document.getElementById('resumo-list');
+  const meses=new Set();
+  pgtos.forEach(r=>meses.add(r.mes));
+  repasses.forEach(r=>meses.add(r.mes));
+  espacos.forEach(e=>meses.add(e.mes));
+  if(!meses.size){c.innerHTML='<p class="empty">Nenhum dado financeiro ainda. Comece pelas outras abas.</p>';return;}
+  const sorted=[...meses].sort().reverse();
+  c.innerHTML=sorted.map(mes=>{
+    const alunasPgto=pgtos.filter(r=>r.mes===mes&&r.pgto);
+    const alunasPend=pgtos.filter(r=>r.mes===mes&&!r.pgto);
+    const repMes=repasses.filter(r=>r.mes===mes&&r.valor!==null);
+    const espMes=espacos.filter(e=>e.mes===mes&&e.valor!==null);
+    const entradas=repMes.reduce((s,r)=>s+(r.valor||0),0);
+    const saidas=espMes.reduce((s,e)=>s+(e.valor||0),0);
+    const saldo=entradas-saidas;
+    const maxW=Math.max(entradas,saidas,1);
+    const detalhes=[
+      ...repMes.map(r=>({label:r.app,val:r.valor,neg:false})),
+      ...espMes.map(e=>({label:'Espaço: '+e.nome,val:e.valor,neg:true}))
+    ];
+    return`<div class="res-card">
+      <div class="res-mes-title">${fmtMes(mes,true)}</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Entradas (apps)</div><div class="metric-val pos">${fmtVal(entradas)}</div></div>
+        <div class="metric"><div class="metric-label">Saídas (espaço)</div><div class="metric-val neg">${fmtVal(saidas)}</div></div>
+        <div class="metric"><div class="metric-label">Saldo</div><div class="metric-val ${saldo>=0?'pos':'neg'}">${fmtVal(saldo)}</div></div>
+        <div class="metric"><div class="metric-label">Alunas pagas</div><div class="metric-val">${alunasPgto.length}<span style="font-size:13px;font-weight:400;color:#aaa"> / ${alunasPgto.length+alunasPend.length}</span></div></div>
+      </div>
+      <div class="barra-wrap">
+        <div class="barra-row"><span>Entradas</span><span>${fmtVal(entradas)}</span></div>
+        <div class="barra-track"><div class="barra-ent" style="width:${Math.round(entradas/maxW*100)}%"></div></div>
+      </div>
+      <div class="barra-wrap" style="margin-top:6px">
+        <div class="barra-row"><span>Saídas</span><span>${fmtVal(saidas)}</span></div>
+        <div class="barra-track"><div class="barra-sai" style="width:${Math.round(saidas/maxW*100)}%"></div></div>
+      </div>
+      ${detalhes.length?`<div style="margin-top:12px">${detalhes.map(l=>`
+        <div class="detail-linha">
+          <span class="detail-label">${l.label}</span>
+          <span class="detail-val" style="color:${l.neg?'#c0392b':'#1a7a45'}">${l.neg?'− ':'+ '}${fmtVal(l.val)}</span>
+        </div>`).join('')}</div>`:''}
+      ${alunasPend.length?`<div class="pend-aviso">Pendente: ${alunasPend.map(r=>r.nome).join(', ')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// Init
+pingSheets();
+renderPgto(); renderFreq(); renderApps(); renderEspaco();
+</script>
+</body>
+</html>
