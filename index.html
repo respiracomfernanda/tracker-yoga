@@ -204,7 +204,8 @@ async function sendToSheets(tipo, dados){
   if(!SHEETS_URL||SHEETS_URL==='COLE_AQUI') return;
   setDot('sync');
   try{
-    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo,...dados})});
+    const params = new URLSearchParams({tipo, dados: JSON.stringify(dados)});
+    await fetch(SHEETS_URL+'?'+params.toString(),{method:'GET',mode:'no-cors'});
     setDot('ok');
   }catch(e){ setDot('erro'); }
 }
