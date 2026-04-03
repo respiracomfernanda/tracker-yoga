@@ -488,30 +488,26 @@ function renderResumo(){
   const c=document.getElementById('resumo-list');
   const meses=new Set();
   pgtos.forEach(r=>meses.add(r.mes));
-  repasses.forEach(r=>meses.add(r.mes));
   espacos.forEach(e=>meses.add(e.mes));
   if(!meses.size){c.innerHTML='<p class="empty">Nenhum dado financeiro ainda. Comece pelas outras abas.</p>';return;}
   const sorted=[...meses].sort().reverse();
   c.innerHTML=sorted.map(mes=>{
-    const alunasPgto=pgtos.filter(r=>r.mes===mes&&r.pgto);
-    const alunasPend=pgtos.filter(r=>r.mes===mes&&!r.pgto);
-    const repMes=repasses.filter(r=>r.mes===mes&&r.valor!==null);
+    const todasAlunas=pgtos.filter(r=>r.mes===mes);
+    const alunasPagas=todasAlunas.filter(r=>r.pgto);
+    const alunasPend=todasAlunas.filter(r=>!r.pgto);
     const espMes=espacos.filter(e=>e.mes===mes&&e.valor!==null);
-    const entradas=repMes.reduce((s,r)=>s+(r.valor||0),0);
+    const entradas=todasAlunas.filter(r=>r.valor!==null).reduce((s,r)=>s+(r.valor||0),0);
     const saidas=espMes.reduce((s,e)=>s+(e.valor||0),0);
     const saldo=entradas-saidas;
     const maxW=Math.max(entradas,saidas,1);
-    const detalhes=[
-      ...repMes.map(r=>({label:r.app,val:r.valor,neg:false})),
-      ...espMes.map(e=>({label:'Espaço: '+e.nome,val:e.valor,neg:true}))
-    ];
+    const detalhesPgto=todasAlunas.filter(r=>r.valor!==null).sort((a,b)=>a.nome.localeCompare(b.nome));
     return`<div class="res-card">
       <div class="res-mes-title">${fmtMes(mes,true)}</div>
       <div class="metrics">
-        <div class="metric"><div class="metric-label">Entradas (apps)</div><div class="metric-val pos">${fmtVal(entradas)}</div></div>
+        <div class="metric"><div class="metric-label">Entradas (alunas)</div><div class="metric-val pos">${fmtVal(entradas)}</div></div>
         <div class="metric"><div class="metric-label">Saídas (espaço)</div><div class="metric-val neg">${fmtVal(saidas)}</div></div>
         <div class="metric"><div class="metric-label">Saldo</div><div class="metric-val ${saldo>=0?'pos':'neg'}">${fmtVal(saldo)}</div></div>
-        <div class="metric"><div class="metric-label">Alunas pagas</div><div class="metric-val">${alunasPgto.length}<span style="font-size:13px;font-weight:400;color:#aaa"> / ${alunasPgto.length+alunasPend.length}</span></div></div>
+        <div class="metric"><div class="metric-label">Alunas pagas</div><div class="metric-val">${alunasPagas.length}<span style="font-size:13px;font-weight:400;color:#aaa"> / ${todasAlunas.length}</span></div></div>
       </div>
       <div class="barra-wrap">
         <div class="barra-row"><span>Entradas</span><span>${fmtVal(entradas)}</span></div>
@@ -521,16 +517,22 @@ function renderResumo(){
         <div class="barra-row"><span>Saídas</span><span>${fmtVal(saidas)}</span></div>
         <div class="barra-track"><div class="barra-sai" style="width:${Math.round(saidas/maxW*100)}%"></div></div>
       </div>
-      ${detalhes.length?`<div style="margin-top:12px">${detalhes.map(l=>`
+      <div style="margin-top:12px">
+        ${detalhesPgto.map(r=>`
         <div class="detail-linha">
-          <span class="detail-label">${l.label}</span>
-          <span class="detail-val" style="color:${l.neg?'#c0392b':'#1a7a45'}">${l.neg?'− ':'+ '}${fmtVal(l.val)}</span>
-        </div>`).join('')}</div>`:''}
+          <span class="detail-label">${r.nome}${r.pgto?\` · pago \${fmt(r.pgto)}\`:' · pendente'}</span>
+          <span class="detail-val" style="color:${r.valor?'#1a7a45':'#aaa'}">${r.valor!==null?'+ '+fmtVal(r.valor):'—'}</span>
+        </div>`).join('')}
+        ${espMes.map(e=>`
+        <div class="detail-linha">
+          <span class="detail-label">Espaço: ${e.nome}</span>
+          <span class="detail-val" style="color:#c0392b">− ${fmtVal(e.valor)}</span>
+        </div>`).join('')}
+      </div>
       ${alunasPend.length?`<div class="pend-aviso">Pendente: ${alunasPend.map(r=>r.nome).join(', ')}</div>`:''}
     </div>`;
   }).join('');
 }
-
 // Init
 pingSheets();
 renderPgto(); renderFreq(); renderApps(); renderEspaco();
